@@ -1,0 +1,95 @@
+{% extends 'info/base.html' %}
+{% load static %}
+
+{% block title %}Timetable - College ERP{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1">
+            <i class="fas fa-calendar-alt text-primary me-2"></i>Class Timetable
+        </h2>
+        <p class="text-muted mb-0">Weekly schedule for your classes</p>
+    </div>
+</div>
+
+<div class="card-modern">
+    <div class="card-header">
+        <i class="fas fa-table me-2"></i>Timetable
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-modern table-bordered text-center" id="timetableTable">
+                <thead>
+                    <tr>
+                        <th class="bg-primary text-white">Day/Time</th>
+                        <th class="bg-light">7:30 - 8:30</th>
+                        <th class="bg-light">8:30 - 9:30</th>
+                        <th class="bg-light">9:30 - 10:30</th>
+                        <th class="bg-secondary text-white">Break</th>
+                        <th class="bg-light">11:00 - 11:50</th>
+                        <th class="bg-light">11:50 - 12:40</th>
+                        <th class="bg-light">12:40 - 1:30</th>
+                        <th class="bg-secondary text-white">Lunch</th>
+                        <th class="bg-light">2:30 - 3:30</th>
+                        <th class="bg-light">3:30 - 4:30</th>
+                        <th class="bg-light">4:30 - 5:30</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in matrix %}
+                    <tr>
+                        {% for j in i %}
+                            {% if forloop.counter == 1 %}
+                                <td class="bg-primary text-white fw-bold">
+                                    <i class="fas fa-calendar-day me-2"></i>{{ j }}
+                                </td>
+                            {% elif j == '' %}
+                                <td class="bg-light">-</td>
+                            {% else %}
+                                <td class="bg-success text-white fw-semibold">
+                                    <i class="fas fa-book me-1"></i>{{ j }}
+                                </td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+#timetableTable {
+    font-size: 0.95rem;
+}
+
+#timetableTable th,
+#timetableTable td {
+    padding: 1rem 0.5rem;
+    vertical-align: middle;
+}
+
+#timetableTable tbody tr:hover {
+    transform: scale(1.01);
+    transition: transform 0.2s ease;
+}
+
+#timetableTable tbody td.bg-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+}
+
+@media (max-width: 768px) {
+    #timetableTable {
+        font-size: 0.8rem;
+    }
+    
+    #timetableTable th,
+    #timetableTable td {
+        padding: 0.5rem 0.25rem;
+    }
+}
+</style>
+{% endblock %}

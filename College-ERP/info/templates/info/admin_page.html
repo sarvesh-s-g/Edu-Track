@@ -1,0 +1,109 @@
+{% extends 'info/base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - College ERP{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section fade-in-up">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="text-white mb-3">
+                    <i class="fas fa-user-shield me-3"></i>
+                    Admin Dashboard
+                </h1>
+                <p class="text-white-50 mb-0">
+                    <i class="fas fa-cog me-2"></i>
+                    Manage students, teachers, and system settings
+                </p>
+            </div>
+            <div class="col-lg-4 text-end">
+                <div class="bg-white bg-opacity-20 rounded-modern p-3 d-inline-block">
+                    <div class="text-white-50 small">Administrator</div>
+                    <div class="text-white fw-bold fs-5">{{ request.user.username|title }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Actions -->
+<div class="container">
+    <div class="row g-4 mb-5">
+        <div class="col-lg-6 col-md-6">
+            <div class="card-modern h-100">
+                <div class="card-body text-center p-5">
+                    <i class="fas fa-user-plus fa-4x text-primary mb-4"></i>
+                    <h4 class="mb-3">Add Student</h4>
+                    <p class="text-muted mb-4">Register a new student to the system with their details and class assignment.</p>
+                    <a href="{% url 'add_student' %}" class="btn btn-primary-modern btn-modern">
+                        <i class="fas fa-plus me-2"></i>Add New Student
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6 col-md-6">
+            <div class="card-modern h-100">
+                <div class="card-body text-center p-5">
+                    <i class="fas fa-chalkboard-teacher fa-4x text-success mb-4"></i>
+                    <h4 class="mb-3">Add Teacher</h4>
+                    <p class="text-muted mb-4">Register a new teacher to the system with their department and credentials.</p>
+                    <a href="{% url 'add_teacher' %}" class="btn btn-success-modern btn-modern">
+                        <i class="fas fa-plus me-2"></i>Add New Teacher
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Access -->
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card-modern">
+                <div class="card-header">
+                    <i class="fas fa-link me-2"></i>Quick Access
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <a href="/admin/" class="text-decoration-none">
+                                <div class="p-4 bg-light rounded-modern text-center h-100 hover-shadow">
+                                    <i class="fas fa-cog fa-2x text-primary mb-3"></i>
+                                    <h6 class="mb-0">Django Admin</h6>
+                                    <small class="text-muted">Full system administration</small>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-4 bg-light rounded-modern text-center h-100">
+                                <i class="fas fa-database fa-2x text-info mb-3"></i>
+                                <h6 class="mb-0">Database</h6>
+                                <small class="text-muted">Manage all data</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-4 bg-light rounded-modern text-center h-100">
+                                <i class="fas fa-users fa-2x text-success mb-3"></i>
+                                <h6 class="mb-0">User Management</h6>
+                                <small class="text-muted">View all users</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hover-shadow {
+    transition: all 0.3s ease;
+}
+.hover-shadow:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-5px);
+}
+</style>
+{% endblock %}

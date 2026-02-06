@@ -1,0 +1,193 @@
+{% extends 'info/base.html' %}
+{% load static %}
+
+{% block title %}Edit Attendance - College ERP{% endblock %}
+
+{% block css %}
+<style>
+.attendance-radio-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.attendance-btn {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    text-align: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.attendance-btn input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.attendance-btn.present-btn {
+    color: #059669;
+    border-color: #d1fae5;
+}
+
+.attendance-btn.present-btn:hover {
+    background: #ecfdf5;
+    border-color: #10b981;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+}
+
+.attendance-btn.present-btn.active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border-color: #10b981;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.attendance-btn.absent-btn {
+    color: #dc2626;
+    border-color: #fee2e2;
+}
+
+.attendance-btn.absent-btn:hover {
+    background: #fef2f2;
+    border-color: #ef4444;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+}
+
+.attendance-btn.absent-btn.active {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border-color: #ef4444;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.attendance-btn i {
+    font-size: 1.1rem;
+}
+
+.table-modern tbody tr:hover {
+    background-color: #f9fafb;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1">
+            <i class="fas fa-edit text-primary me-2"></i>Edit Attendance
+        </h2>
+        <p class="text-muted mb-0">{{ assc.assign.course.name }} - {{ assc.date }}</p>
+    </div>
+</div>
+
+<form action="{% url 'confirm' assc.id %}" method="post">
+    {% csrf_token %}
+    <div class="card-modern">
+        <div class="card-header">
+            <i class="fas fa-users me-2"></i>Update Attendance Records
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-modern" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width: 60%">
+                                <i class="fas fa-user me-2"></i>Student Name
+                            </th>
+                            <th style="width: 40%">
+                                <i class="fas fa-check-circle me-2"></i>Attendance Status
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for att in att_list %}
+                        <tr>
+                            <td>
+                                <strong>{{ att.student.name }}</strong>
+                                <br>
+                                <small class="text-muted">{{ att.student.USN }}</small>
+                            </td>
+                            <td>
+                                <div class="attendance-radio-group">
+                                    {% if att.status %}
+                                    <label class="attendance-btn present-btn active">
+                                        <input type="radio" name="{{ att.student.USN }}" value="present" checked>
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Present</span>
+                                    </label>
+                                    <label class="attendance-btn absent-btn">
+                                        <input type="radio" name="{{ att.student.USN }}" value="absent">
+                                        <i class="fas fa-times-circle"></i>
+                                        <span>Absent</span>
+                                    </label>
+                                    {% else %}
+                                    <label class="attendance-btn present-btn">
+                                        <input type="radio" name="{{ att.student.USN }}" value="present">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Present</span>
+                                    </label>
+                                    <label class="attendance-btn absent-btn active">
+                                        <input type="radio" name="{{ att.student.USN }}" value="absent" checked>
+                                        <i class="fas fa-times-circle"></i>
+                                        <span>Absent</span>
+                                    </label>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-light border-0">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Update attendance status and click submit
+                    </small>
+                </div>
+                <button type="submit" class="btn btn-primary-modern btn-modern px-4">
+                    <i class="fas fa-save me-2"></i>Update Attendance
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Handle radio button clicks
+    $('.attendance-btn input[type="radio"]').on('change', function() {
+        const $row = $(this).closest('tr');
+        const $labels = $row.find('.attendance-btn');
+        
+        // Remove active class from all buttons in this row
+        $labels.removeClass('active');
+        
+        // Add active class to the selected button
+        $(this).closest('.attendance-btn').addClass('active');
+    });
+    
+    // Initialize - set active state based on checked radio
+    $('.attendance-btn input[type="radio"]:checked').each(function() {
+        $(this).closest('.attendance-btn').addClass('active');
+    });
+});
+</script>
+{% endblock %}

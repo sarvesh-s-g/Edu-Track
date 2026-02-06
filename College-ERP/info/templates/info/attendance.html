@@ -1,0 +1,157 @@
+{% extends 'info/base.html' %}
+{% load static %}
+
+{% block title %}Attendance - College ERP{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1">
+            <i class="fas fa-calendar-check text-primary me-2"></i>Attendance Overview
+        </h2>
+        <p class="text-muted mb-0">Track your attendance across all courses</p>
+    </div>
+    <div>
+        <span class="badge bg-primary px-3 py-2">
+            <i class="fas fa-user me-1"></i>{{ request.user.student.name|title }}
+        </span>
+    </div>
+</div>
+
+<div class="card-modern fade-in-up">
+    <div class="card-header">
+        <i class="fas fa-table me-2"></i>Course Attendance Details
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-modern table-hover" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-book me-2"></i>Course ID</th>
+                        <th><i class="fas fa-book-open me-2"></i>Course Name</th>
+                        <th><i class="fas fa-chalkboard-teacher me-2"></i>Teacher</th>
+                        <th><i class="fas fa-check-circle me-2"></i>Attended</th>
+                        <th><i class="fas fa-calendar me-2"></i>Total Classes</th>
+                        <th><i class="fas fa-percentage me-2"></i>Attendance %</th>
+                        <th><i class="fas fa-exclamation-triangle me-2"></i>Required</th>
+                        <th><i class="fas fa-eye me-2"></i>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in att_list %}
+                    <tr>
+                        <td>
+                            <span class="badge bg-secondary">{{ item.att.course_id }}</span>
+                        </td>
+                        <td>
+                            <strong>{{ item.att.course.name }}</strong>
+                        </td>
+                        <td>
+                            {% if item.teacher %}
+                                <a href="{% url 't_clas' item.teacher.id 1 %}" class="d-flex align-items-center text-decoration-none">
+                                    <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-2" style="width:40px;height:40px;font-weight:700;">
+                                        {{ item.teacher.name|slice:":1"|upper }}
+                                    </div>
+                                    <div class="lh-1">
+                                        <div class="fw-semibold text-dark">{{ item.teacher.name }}</div>
+                                        {% if item.teacher.dept %}
+                                            <div class="text-muted small">{{ item.teacher.dept.name }}</div>
+                                        {% endif %}
+                                    </div>
+                                </a>
+                            {% else %}
+                                <span class="text-muted">TBA</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge bg-success">{{ item.att.att_class }}</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-info">{{ item.att.total_class }}</span>
+                        </td>
+                        <td>
+                            {% if item.att.attendance < 75 %}
+                                <span class="badge bg-danger px-3 py-2">
+                                    <i class="fas fa-exclamation-circle me-1"></i>{{ item.att.attendance }}%
+                                </span>
+                            {% else %}
+                                <span class="badge bg-success px-3 py-2">
+                                    <i class="fas fa-check-circle me-1"></i>{{ item.att.attendance }}%
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if item.att.classes_to_attend > 0 %}
+                                <span class="badge bg-warning text-dark">
+                                    {{ item.att.classes_to_attend }} more needed
+                                </span>
+                            {% else %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check me-1"></i>Sufficient
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'attendance_detail' item.att.student.USN item.att.course.id %}" 
+                               class="btn btn-sm btn-primary-modern btn-modern">
+                                <i class="fas fa-eye me-1"></i>View Details
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center py-5">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3 d-block"></i>
+                            <p class="text-muted">No attendance records found</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Attendance Summary Cards -->
+<div class="row g-4 mt-4">
+    <div class="col-md-4">
+        <div class="card-modern text-center">
+            <div class="card-body">
+                <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                <h4 class="mb-1">
+                    {% for item in att_list %}
+                        {% if forloop.first %}{{ item.att.att_class }}{% endif %}
+                    {% empty %}0{% endfor %}
+                </h4>
+                <p class="text-muted mb-0">Total Classes Attended</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-modern text-center">
+            <div class="card-body">
+                <i class="fas fa-calendar fa-3x text-info mb-3"></i>
+                <h4 class="mb-1">
+                    {% for item in att_list %}
+                        {% if forloop.first %}{{ item.att.total_class }}{% endif %}
+                    {% empty %}0{% endfor %}
+                </h4>
+                <p class="text-muted mb-0">Total Classes Conducted</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-modern text-center">
+            <div class="card-body">
+                <i class="fas fa-percentage fa-3x text-primary mb-3"></i>
+                <h4 class="mb-1">
+                    {% for item in att_list %}
+                        {% if forloop.first %}{{ item.att.attendance }}%{% endif %}
+                    {% empty %}0%{% endfor %}
+                </h4>
+                <p class="text-muted mb-0">Overall Attendance</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
